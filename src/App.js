@@ -8,14 +8,18 @@ import Search from "./components/Search";
 import { useEffect, useState } from "react";
 import Results from "./components/Results";
 import Loader from "./components/Loader";
+import MovieDetails from "./components/MovieDetails";
+import WatchedSummary from "./components/WatchedSummary";
 const KEY = "f84fc31d";
 
 function App() {
   const [movies, setMovies] = useState([]);
+
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     if (query === "") return;
@@ -29,6 +33,7 @@ function App() {
         );
         if (!res.ok) throw new Error("Something went wrong!");
         const data = await res.json();
+        console.log(data.Search);
         if (data.Response === "False") throw new Error("Movie Not Found");
         setMovies(data.Search || []);
         setIsLoading(false);
@@ -48,8 +53,16 @@ function App() {
     getData();
   }, [query]);
 
+  function handleSelectMovie(id) {
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
+  }
+
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
+
   return (
-    <div className="bg-[#212529] w-full h-screen">
+    <div className="bg-[#212529] w-full h-full ">
       <Navbar>
         <Logo />
         <Search query={query} setQuery={setQuery} />
@@ -58,8 +71,24 @@ function App() {
       <WatchedBox>
         {isLoading && <Loader />}
         {error && <ErrorMessage message={error} />}
-        {!isLoading && !error && <Movies movies={movies} />}
-        <Watched watchedMovies={watchedMovies} />
+        {!isLoading && !error && (
+          <Movies handleSelectMovie={handleSelectMovie} movies={movies} />
+        )}
+
+        {selectedId ? (
+          <MovieDetails
+            selectedId={selectedId}
+            handleCloseMovie={handleCloseMovie}
+          />
+        ) : (
+          <div
+            style={{ height: "calc(100vh - 150px)" }}
+            className="flex flex-col  rounded-xl w-full  md:w-1/2"
+          >
+            <WatchedSummary></WatchedSummary>
+            <Watched watchedMovies={watchedMovies}></Watched>
+          </div>
+        )}
       </WatchedBox>
     </div>
   );

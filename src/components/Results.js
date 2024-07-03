@@ -1,7 +1,7 @@
-function Results() {
+function Results({movies}) {
     return (
         <div>
-            <p>Found 10 results</p>
+            <p>Found {movies.length} results</p>
         </div>
     )
 }

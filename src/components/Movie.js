@@ -1,6 +1,8 @@
-function Movie({ movie }) {
+function Movie({ movie ,handleSelectMovie}) {
   return (
-    <div className="flex space-x-3 mb-4">
+    <div className="flex space-x-3 mb-4"
+    onClick={()=>handleSelectMovie(movie.imdbID)}
+    >
       <div className="w-[50px] h-[75px] ">
         <img src={movie.Poster} alt="movieimg" className="object-cover"></img>
       </div>
