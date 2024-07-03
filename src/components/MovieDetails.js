@@ -2,16 +2,15 @@ import { useState, useEffect } from "react";
 import Loader from "./Loader";
 const KEY = "f84fc31d";
 
-function MovieDetails({ selectedId, handleCloseMovie, onAddWatched, watched }) {
+function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [userRating, setUserRating] = useState("");
 
   useEffect(() => {
     if (!selectedId) return;
 
     async function getMovieDetails() {
-      setIsLoading(true)
+      setIsLoading(true);
       const res = await fetch(
         `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
       );
@@ -39,12 +38,29 @@ function MovieDetails({ selectedId, handleCloseMovie, onAddWatched, watched }) {
     Genre: genre,
   } = movie;
 
+  function handleAdd() {
+    const newItem = {
+      imdbId: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(' ')[0]),
+    };
+    handleAddWatched(newItem);
+    handleCloseMovie();
+  }
+
   return (
-      <div
+    <div
       style={{ height: "calc(100vh - 150px)" }}
-          className="flex flex-col w-full md:w-1/2">
-      <header className='relative bg-[#343a40] rounded-lg'>
-        <button className="size-[30px] rounded-full justify-center items-center flex bg-white text-black text-lg absolute top-0 left-0" onClick={handleCloseMovie}>
+      className="flex flex-col w-full md:w-1/2"
+    >
+      <header className="relative bg-[#343a40] rounded-lg p-4">
+        <button
+          className="size-[30px] rounded-full justify-center items-center flex bg-white text-black text-lg absolute top-4 left-4"
+          onClick={handleCloseMovie}
+        >
           &larr;
         </button>
         <div className="flex space-x-10">
@@ -58,20 +74,28 @@ function MovieDetails({ selectedId, handleCloseMovie, onAddWatched, watched }) {
             )}
           </div>
 
-          <div >
-            <h2 className='font-bold text-white text-2xl mb-3'>{title}</h2>
-            <p className='text-white mb-2'>
+          <div>
+            <h2 className="font-bold text-white text-2xl mb-3">{title}</h2>
+            <p className="text-white mb-2">
               {released} &bull; {runtime}
             </p>
-            <p className='mb-5 text-white'>{genre}</p>
-            <p className='text-white t'>
+            <p className="mb-5 text-white">{genre}</p>
+            <p className="text-white">
               <span>⭐️</span>
               {imdbRating} IMDb rating
             </p>
           </div>
         </div>
       </header>
-      <section className='text-white mt-4 flex-col w-[400px] mx-auto '>
+      <section className="text-white mt-4 flex-col w-[400px] mx-auto">
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={handleAdd}
+            className="text-lg rounded-full text-white w-[120px] h-[30px] bg-black"
+          >
+            Add To List
+          </button>
+        </div>
         <p>
           <em>{plot}</em>
         </p>

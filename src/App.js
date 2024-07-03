@@ -21,6 +21,8 @@ function App() {
   const [error, setError] = useState();
   const [selectedId, setSelectedId] = useState(null);
 
+  
+ 
   useEffect(() => {
     if (query === "") return;
 
@@ -61,6 +63,10 @@ function App() {
     setSelectedId(null);
   }
 
+  function handleAddWatched(movie) {
+    setWatchedMovies((watchedMovies)=>[...watchedMovies,movie])
+  }
+
   return (
     <div className="bg-[#212529] w-full h-full ">
       <Navbar>
@@ -79,13 +85,14 @@ function App() {
           <MovieDetails
             selectedId={selectedId}
             handleCloseMovie={handleCloseMovie}
+            handleAddWatched={handleAddWatched}
           />
         ) : (
           <div
             style={{ height: "calc(100vh - 150px)" }}
             className="flex flex-col  rounded-xl w-full  md:w-1/2"
           >
-            <WatchedSummary></WatchedSummary>
+            <WatchedSummary ></WatchedSummary>
             <Watched watchedMovies={watchedMovies}></Watched>
           </div>
         )}
