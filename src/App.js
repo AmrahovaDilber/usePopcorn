@@ -21,9 +21,8 @@ function App() {
   const [error, setError] = useState();
   const [selectedId, setSelectedId] = useState(null);
 
-  
- 
   useEffect(() => {
+    const controller = new AbortController();
     if (query === "") return;
 
     async function getData() {
@@ -31,7 +30,8 @@ function App() {
         setIsLoading(true);
         setError("");
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal }
         );
         if (!res.ok) throw new Error("Something went wrong!");
         const data = await res.json();
@@ -39,8 +39,12 @@ function App() {
         if (data.Response === "False") throw new Error("Movie Not Found");
         setMovies(data.Search || []);
         setIsLoading(false);
+        setError("")
       } catch (err) {
         console.error(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message)
+        }
         setError(err.message);
       } finally {
         setIsLoading(false);
@@ -53,6 +57,12 @@ function App() {
       return;
     }
     getData();
+
+
+    return function () {
+      controller.abort();
+    }
+
   }, [query]);
 
   function handleSelectMovie(id) {
@@ -64,7 +74,7 @@ function App() {
   }
 
   function handleAddWatched(movie) {
-    setWatchedMovies((watchedMovies)=>[...watchedMovies,movie])
+    setWatchedMovies((watchedMovies) => [...watchedMovies, movie]);
   }
 
   return (
@@ -92,7 +102,7 @@ function App() {
             style={{ height: "calc(100vh - 150px)" }}
             className="flex flex-col  rounded-xl w-full  md:w-1/2"
           >
-            <WatchedSummary ></WatchedSummary>
+            <WatchedSummary></WatchedSummary>
             <Watched watchedMovies={watchedMovies}></Watched>
           </div>
         )}

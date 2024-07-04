@@ -28,6 +28,10 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
   useEffect(() => {
     if (!movie || !movie.Title) return;
     document.title = `Movie || ${movie.Title}`;
+    return function () {
+    document.title='usePopcorn'
+  }
+  
   }, [movie]);
 
   if (isLoading) return <Loader />;
@@ -37,7 +41,7 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
     Title: title,
     Year: year,
     Poster: poster,
-    Runtime: runtime,
+    Runtime: runtime, 
     imdbRating,
     Plot: plot,
     Released: released,
