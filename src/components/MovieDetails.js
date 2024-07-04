@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import Loader from "./Loader";
+import StarRating from "./StarRating";
 const KEY = "f84fc31d";
 
 function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     if (!selectedId) return;
@@ -51,6 +53,11 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
     handleCloseMovie();
   }
 
+  const handleSetRating = (newRating) => {
+    setRating(newRating);
+    console.log(`New rating is ${newRating}`);
+  };
+
   return (
     <div
       style={{ height: "calc(100vh - 150px)" }}
@@ -87,6 +94,8 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
           </div>
         </div>
       </header>
+      <StarRating maxRating={10} onSetRating={handleSetRating} defaultRating={rating} />
+
       <section className="text-white mt-4 flex-col w-[400px] mx-auto">
         <div className="flex justify-center mb-4">
           <button
