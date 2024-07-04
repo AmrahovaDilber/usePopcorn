@@ -24,6 +24,12 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
     getMovieDetails();
   }, [selectedId]);
 
+  // CHANGING PAGE TITLE DYNAMICALLY
+  useEffect(() => {
+    if (!movie || !movie.Title) return;
+    document.title = `Movie || ${movie.Title}`;
+  }, [movie]);
+
   if (isLoading) return <Loader />;
   if (!movie) return null;
 
@@ -47,7 +53,7 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
       year,
       poster,
       imdbRating: Number(imdbRating),
-      runtime: Number(runtime.split(' ')[0]),
+      runtime: Number(runtime.split(" ")[0]),
     };
     handleAddWatched(newItem);
     handleCloseMovie();
@@ -94,7 +100,11 @@ function MovieDetails({ selectedId, handleCloseMovie, handleAddWatched }) {
           </div>
         </div>
       </header>
-      <StarRating maxRating={10} onSetRating={handleSetRating} defaultRating={rating} />
+      <StarRating
+        maxRating={10}
+        onSetRating={handleSetRating}
+        defaultRating={rating}
+      />
 
       <section className="text-white mt-4 flex-col w-[400px] mx-auto">
         <div className="flex justify-center mb-4">
