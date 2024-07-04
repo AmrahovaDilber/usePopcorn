@@ -39,11 +39,11 @@ function App() {
         if (data.Response === "False") throw new Error("Movie Not Found");
         setMovies(data.Search || []);
         setIsLoading(false);
-        setError("")
+        setError("");
       } catch (err) {
         console.error(err.message);
-        if (err.name !== 'AbortError') {
-          setError(err.message)
+        if (err.name !== "AbortError") {
+          setError(err.message);
         }
         setError(err.message);
       } finally {
@@ -56,13 +56,12 @@ function App() {
       setError("");
       return;
     }
+    handleCloseMovie()
     getData();
-
 
     return function () {
       controller.abort();
-    }
-
+    };
   }, [query]);
 
   function handleSelectMovie(id) {
@@ -76,6 +75,18 @@ function App() {
   function handleAddWatched(movie) {
     setWatchedMovies((watchedMovies) => [...watchedMovies, movie]);
   }
+
+  useEffect(function () {
+    function callback(e) {
+      if (e.code === "Escape") {
+        handleCloseMovie();
+      }
+    }
+    document.addEventListener("keydown", callback);
+    return function () {
+      document.removeEventListener("keydown", callback);
+    };
+  }, []);
 
   return (
     <div className="bg-[#212529] w-full h-full ">
